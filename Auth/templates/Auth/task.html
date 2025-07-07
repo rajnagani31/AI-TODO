@@ -1,0 +1,51 @@
+{% extends "Auth/main.html" %}
+
+{% block style %}
+  <style>
+  .task-navbar {
+    background-color: #ffffff;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .task-navbar .task-links a {
+    margin-left: 20px;
+    color: #333;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .task-navbar .task-links a:hover {
+    text-decoration: underline;
+    
+  }
+</style>
+
+{% endblock style %}
+
+{% block content %}
+<!-- Task Navigation Bar below top heading -->
+<div class="main-content">
+  <div class="task-navbar mt--10">
+    <!-- Left: Add Task Button -->
+     <a href="{% url "task_form" %}">
+    <button class="btn btn-primary btn-sm">+ Add Task</button>
+    </a>
+
+    <!-- Right: Task Filters -->
+    <div class="task-links">
+      <a href="{% url 'today_task' %}">Today Task</a>
+      <a href="#">Advance Task</a>
+      <a href="#">Pending Task</a>
+      <a href="{% url "complite" %}">Complete Task</a>
+    </div>
+  </div>
+
+  <!-- Main content -->
+   {% block task_content %}{% endblock task_content %}
+
+{% endblock content %}

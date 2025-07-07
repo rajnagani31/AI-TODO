@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg,rgb(215, 216, 221) 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h2 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: #666;
+            margin-bottom: 0;
+        }
+        
+        .form-floating {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px 18px;
+            font-size: 16px;
+            height: 58px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group-text {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+        }
+        
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .signup-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        .icon {
+            color: #667eea;
+        }
+        
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2><i class="fas fa-user-circle icon"></i> Welcome Back</h2>
+                <p>Please sign in to your account</p>
+            </div>
+            
+            <form  method='POST' id='loginform'>
+                {% csrf_token %}
+                <!-- Username/Email Field -->
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-user icon"></i>
+                    </span>
+                    <div class="form-floating flex-fill">
+                        <input type="email" name='email' class="form-control"  placeholder=" Email" required>
+                        <label for="email"> Email</label>
+                    </div>
+                </div>
+                
+                <!-- Password Field -->
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-lock icon"></i>
+                    </span>
+                    <div class="form-floating flex-fill">
+                        <input type="password" name="password" class="form-control"  placeholder="Password" required>
+                        <label for="password">Password</label>
+                    </div>
+                </div>
+                
+                <!-- Remember Me Checkbox -->
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">
+                        Remember me
+                    </label>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <span style="color:red">{{message}}</span>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-login w-100">
+                    <i class="fas fa-sign-in-alt"></i> LogIn
+                </button>
+                
+                <!-- Forgot Password Link -->
+                <div class="text-center mt-3">
+                    <a href="#" class="text-muted">Forgot your password?</a>
+                </div>
+            </form>
+            
+            <!-- Sign Up Link -->
+             
+            <div class="signup-link">
+                <p class="mb-0">Don't have an account? 
+                    <a href="{% url "register" %}" id="signupLink">
+                        <i class="fas fa-user-plus"></i> Sign up
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Form submission handling
+        {% comment %} document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); {% endcomment %}
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username && password) {
+                // Show success message (in real app, this would make an API call)
+                alert('Login successful! Welcome, ' + username);
+                
+                // Here you would typically send the data to your server
+                console.log('Login attempt:', {
+                    username: username,
+                    password: password,
+                    rememberMe: document.getElementById('rememberMe').checked
+                });
+            } else {
+                alert('Please fill in all required fields.');
+            }
+        });
+        
+        // Sign up link click handler
+        document.getElementById('signupLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Redirecting to sign up page...');
+            // Here you would redirect to your signup page
+            window.location.href = signupLink;
+        });
+        
+        // Add some interactive effects
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

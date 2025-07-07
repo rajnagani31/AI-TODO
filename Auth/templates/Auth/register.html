@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register or Login</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            {% comment %} background-color: #f8f9fa; /* Light gray background */ {% endcomment %}
+            background: linear-gradient(135deg,rgb(215, 216, 221) 0%, #764ba2 100%);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            margin: 0;
+            font-family: 'Inter', sans-serif; /* Using Inter font as per instructions, if available */
+        }
+        .register-container {
+            max-width: 350px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 10px; /* Rounded corners for the container */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            background-color: #ffffff; /* White background for the form card */
+        }
+        .register-container h2 {
+            margin-bottom: 10px;
+            text-align: center;
+            color: #343a40; /* Dark text for heading */
+        }
+        .form-label {
+            font-weight: 500;
+            color: #495057; /* Slightly darker label text */
+        }
+        .form-control {
+            border-radius: 6px; /* Rounded corners for input fields */
+            padding: 4px 8px;
+            border: 1px solid #ced4da;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* Blue focus shadow */
+            border-color: #86b7fe;
+        }
+        .btn-primary {
+            background-color: #0d6efd; /* Bootstrap primary blue */
+            border-color: #0d6efd;
+            border-radius: 8px; /* Rounded corners for buttons */
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.35);
+        }
+        .btn-secondary {
+            background-color: #6c757d; /* Bootstrap secondary gray */
+            border-color: #6c757d;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #5c636a;
+            border-color: #565e64;
+            
+        }
+        .text-center {
+            margin-top: 20px;
+        }
+        .btn-group {
+            width: 100%;
+        }
+        .btn-group .btn {
+            width: 48%; /* Adjust button width for group */
+            margin: 0 1%;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>Create Account</h2>
+        <form method='POST' novalidate>
+            {% csrf_token %}
+            <!-- Username Field -->
+            <div class="mb-3">
+                <label  class="form-label">User Name</label>
+                <input type="text" name="username" class="form-control"  placeholder="Enter your username" required>
+                
+            </div>
+            <!-- Email Field -->
+            <div class="mb-3">
+                <label for="emailInput" class="form-label">Email address</label>
+                <input type="email" name="email" class="form-control" id="emailInput" placeholder="name@example.com" required>
+                
+            </div>
+            <!-- Password Field -->
+            <div class="mb-3">
+                <label for="passwordInput" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" id="passwordInput" placeholder="Enter your password" required>
+                
+            </div>
+            <!-- Confirm Password Field -->
+            <div class="mb-4">
+                <label for="confirmPasswordInput" class="form-label">Confirm Password</label>
+                <input type="confirmpassword" name="confirmpassword" class="form-control" id="confirmPasswordInput" placeholder="Confirm your password" required>
+                
+            </div>
+            {% if messages %}
+                    {% for message in messages %}
+                        <span style="color:red">{{message}}</span>
+                    {% endfor %}
+                {% endif %} 
+                <br>
+            <!-- Buttons -->
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </div>
+            <div class="text-center mt-3">
+                <p>Or</p>
+                <a href="{% url 'login' %}">
+                <button type="button" class="btn btn-secondary">Login</button>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
