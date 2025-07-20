@@ -48,7 +48,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "Auth.middleware.TodoInUc"
+    # "Auth.middleware.TodoInUc"
     
 ]
 
@@ -79,6 +79,14 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+    },
+    "cpostgreSql": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME":"Todo", # --> database name
+        "USER": "Todo",
+        "PASSWORD": "1234",
+        "HOST": "localhost",
+        "PORT": "5432", 
     }
 }
 

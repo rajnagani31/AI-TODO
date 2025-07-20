@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Task
 from .forms import task_form
+from django.db.models import Q
 
 
 User=get_user_model()
@@ -98,7 +99,7 @@ def after_loging_home(request):
     return render(request,'Auth/after_log_home.html')
 
 def add_task(request):
-    return render(request,'Auth/task.html')
+    return render(request,'todo/sidebar.html')
 
 @login_required
 def task_forms(request):
@@ -114,7 +115,7 @@ def task_forms(request):
     else:        
         form=task_form()
 
-    return render (request,'Auth/task_form.html',{'form':form})
+    return render (request,'todo/task_form.html',{'form':form})
 
 def today_task(request):
     
@@ -122,7 +123,7 @@ def today_task(request):
     data=Task.objects.filter(user=request.user)
     tasks=data.all().filter(complete='uncomplete')
 
-    return render(request,'Auth/today_task.html',{'tasks':tasks})
+    return render(request,'todo/today_task.html',{'tasks':tasks})
 
 from django.shortcuts import redirect, get_object_or_404
 def task_true(request,task_id):
@@ -133,6 +134,26 @@ def task_true(request,task_id):
 
 
 def complite_task(request):
+    """ 
+        this is treak and changr task mode into complete
+    """
     data=Task.objects.filter(user=request.user)
     complete_task=data.all().filter(complete='complete')
-    return render(request,'Auth/complite.html',{'tasks':complete_task})
+    return render(request,'todo/complite.html',{'tasks':complete_task})
+
+def advance_task(request):
+    data=Task.objects.filter(user=request.user)
+    advance_task=data.all().filter(Q(status="Advance") & Q(complete="uncomplete"))
+    return render(request,'todo/advance_task.html',{'advance':advance_task})
+
+
+def task_delete(request,task_id):
+    """ Task Delete on complete task page(on ui)"""
+
+    data=Task.objects.filter(user=request.user)
+    complete_task_delete=data.filter(id=task_id).delete()
+    return complite_task(request)
+    # return render(request,'Auth/complite.html',{'tasks':complete_task_delete})
+    # return redirect("Auth/complite.html")
+
+
