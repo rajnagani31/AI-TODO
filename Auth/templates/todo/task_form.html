@@ -1,13 +1,471 @@
-<h1>heloo</h1>
-<h1>Enter your work</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Form Pop-up</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<form action="" method='post'>
-    {% csrf_token %}
-    {{form.as_p}}
-    
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-    <button type="submit">
-        Create Task
-    </button>
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
 
-</form>
+        .popup-container {
+            background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 
+                        0 0 0 1px rgba(255, 255, 255, 0.1);
+            width: 90%;
+            max-width: 420px;
+            padding: 25px;
+            position: relative;
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .form-title {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            color: #e0e0e0;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #ffffff;
+            padding: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #4fc3f7;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+            outline: none;
+            color: #ffffff;
+        }
+
+        .form-control::placeholder {
+            color: #888;
+        }
+
+        .form-select {
+            cursor: pointer;
+        }
+
+        .form-select option {
+            background: #2a2a2a;
+            color: #ffffff;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkmark {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-container input[type="checkbox"]:checked + .checkmark {
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+            border-color: #4fc3f7;
+            transform: scale(1.1);
+        }
+
+        .checkbox-container input[type="checkbox"]:checked + .checkmark::after {
+            content: "✓";
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .checkbox-label {
+            color: #e0e0e0;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn-custom {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(79, 195, 247, 0.4);
+        }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 195, 247, 0.6);
+        }
+
+        .btn-add-more {
+            background: linear-gradient(135deg, #666, #888);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(102, 102, 102, 0.4);
+        }
+
+        .btn-add-more:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 102, 102, 0.6);
+            background: linear-gradient(135deg, #777, #999);
+        }
+
+        .btn-custom:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .popup-container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .form-title {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-custom {
+                margin-bottom: 8px;
+            }
+        }
+
+        /* Glassmorphism effect */
+        .popup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="popup-overlay">
+        <div class="popup-container">
+            <button class="close-btn" onclick="closePopup()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 class="form-title">
+                <i class="fas fa-tasks"></i> New Task
+            </h2>
+            
+            <form id="taskForm">
+                <div class="form-group">
+                    <label class="form-label" for="task">Task</label>
+                    <input type="text" class="form-control" id="task" name="task" placeholder="Enter task title...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="status">Status</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="today" selected>Today</option>
+                        <option value="advance">Advance Task</option>
+                        <option value="tomorrow">Tomorrow</option>
+                        <option value="event">Event</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter task description..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="date">Date</label>
+                    <input type="date" class="form-control" id="date" name="date">
+                </div>
+
+                <div class="checkbox-container">
+                    <input type="checkbox" id="complete" name="complete">
+                    <div class="checkmark"></div>
+                    <label class="checkbox-label" for="complete">Mark as Complete</label>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-custom btn-create">
+                        <i class="fas fa-plus"></i> Create
+                    </button>
+                    <button type="button" class="btn-custom btn-add-more" onclick="addMore()">
+                        <i class="fas fa-plus-circle"></i> Add More
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Set today's date as default
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        });
+
+        // Form submission handler
+        document.getElementById('taskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                task: document.getElementById('task').value,
+                status: document.getElementById('status').value,
+                description: document.getElementById('description').value,
+                date: document.getElementById('date').value,
+                complete: document.getElementById('complete').checked
+            };
+            
+            console.log('Task Created:', formData);
+            
+            // Show success animation
+            showSuccess('Task created successfully!');
+            
+            // Reset form after a delay
+            setTimeout(() => {
+                this.reset();
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('date').value = today;
+            }, 1500);
+        });
+
+        // Add More button handler
+        function addMore() {
+            const formData = {
+                task: document.getElementById('task').value,
+                status: document.getElementById('status').value,
+                description: document.getElementById('description').value,
+                date: document.getElementById('date').value,
+                complete: document.getElementById('complete').checked
+            };
+            
+            console.log('Task Added:', formData);
+            
+            // Show success animation
+            showSuccess('Task added! Ready for next task.');
+            
+            // Clear form for next task
+            setTimeout(() => {
+                document.getElementById('taskForm').reset();
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('date').value = today;
+                document.getElementById('task').focus();
+            }, 1000);
+        }
+
+        // Close popup handler
+        function closePopup() {
+            const popup = document.querySelector('.popup-overlay');
+            popup.style.animation = 'slideOut 0.3s ease-in-out forwards';
+            
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
+        }
+
+        // Success message function
+        function showSuccess(message) {
+            const existingMsg = document.querySelector('.success-message');
+            if (existingMsg) {
+                existingMsg.remove();
+            }
+
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 20px rgba(79, 195, 247, 0.3);
+                    z-index: 9999;
+                    animation: slideInRight 0.5s ease-out;
+                    font-weight: 500;
+                ">
+                    <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+                    ${message}
+                </div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        // Add slideOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                to {
+                    opacity: 0;
+                    transform: translateY(-30px) scale(0.9);
+                }
+            }
+            
+            @keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup();
+            }
+            
+            if (e.ctrlKey && e.key === 'Enter') {
+                document.getElementById('taskForm').dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Click outside to close
+        document.querySelector('.popup-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -18,17 +18,17 @@ class Command(BaseCommand):
 
             NOTICE and Success massage use for information
         """
-        db="postgreSql"
+        db="cpostgreSql"
 
         try:
             self.stdout.write(self.style.NOTICE(" Runing Makemigrations.."))
             call_command('makemigrations')
 
             self.stdout.write(self.style.NOTICE("Runing migrate..."))
-            call_command('migrate')
+            call_command('migrate',database=db)
 
             self.stdout.write(self.style.SUCCESS(f" Successfully migrated to {db}"))
         except Exception as e:
-            return CommandError(f" ERROR : {e}")
+            raise CommandError(f" ERROR : {e}")
         
 

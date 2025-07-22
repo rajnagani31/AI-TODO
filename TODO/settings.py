@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "Auth"
+    "Auth",
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -83,12 +84,14 @@ DATABASES = {
     "cpostgreSql": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME":"Todo", # --> database name
-        "USER": "Todo",
+        "USER": "postgres",
         "PASSWORD": "1234",
         "HOST": "localhost",
         "PORT": "5432", 
     }
 }
+DATABASE_ROUTERS = ['Auth.db_router.DatabaseRouter']
+
 
 
 # Password validation
@@ -130,8 +133,18 @@ STATIC_URL = "static/"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',  # maps 'error' to 'alert-danger' in Bootstrap
 }
 AUTH_USER_MODEL = 'Auth.user_register'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587   
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'rajnagani331@gmail.com'
+EMAIL_HOST_PASSWORD = 'jvfu rpjv pyod tqdj'  # Replace with your actual email password
+
+
+

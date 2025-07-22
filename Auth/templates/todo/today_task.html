@@ -1,35 +1,44 @@
-{% extends "todo/sidebar.html" %}
+{% extends "Auth/after_log_home.html" %}
 
 
 
 {% block task_content %}
-
   
-<br>
-
-<ul class="list-group">
+<div class="task-list">
     {% for task in tasks %}
-        <li class="list-group-item d-flex justify-content-between align-items-center text-white rounded mb-3 shadow" 
-            style="background-color:rgb(36, 95, 126);">
-            <div>
-                <h3 class="mb-3">{{ task.titel }}  {{task.id}}</h3>
-                {% comment %} <h3 class="mb-3"></h3> {% endcomment %}
+        <div class="task-card">
+            <div class="task-header">
+                <div>
+                    <div class="task-title">{{ task.Task }} {{ task.id }}</div>
+                    <div class="task-meta">
+                        <span>Status: {{ task.status }}</span>
+                        <span>Date: {{ task.date_time }}</span>
+                    </div>
+                </div>
+                <div class="task-actions">
+                    <!-- COMPLETE -->
+                    <form method="post" action="" style="display:inline;">
+                        {% csrf_token %}
+                        <a href="{% url 'task_update_complete' task.id %}">
+                        <button type="submit" class="action-btn complete-btn">Complete</button>
+                        </a>
+                        </form>
 
-                <small>Status: {{ task.status }} | Date: {{ task.date_time }}</small>
+                    <!-- DELETE -->
+                        <form method="DELETE" action="{% url "delete" task.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <a href=""><button type="submit" class="action-btn delete-btn">Delete</button></a>
+                        
+                    </form>
+                        
+                    <!-- EDIT (assume edit page or modal trigger) -->
+                    <a href="" class="action-btn edit-btn">Edit</a>
+                </div>
             </div>
-            <form  method="POST">
-                {% csrf_token %}
-                
-                <button type="submit" class="btn btn-light btn-sm"><a href="{% url 'task_true' task.id%}">Complete</a></button>                
-
-                <button type="submit" class="btn btn-light btn-sm">Delete</button>
-                <button type="submit" class="btn btn-light btn-sm">Adit</button>
-
-
-            </form>
-        </li>
+        </div>
     {% empty %}
-        <li class="list-group-item text-muted">No tasks found.</li>
+        <div class="task-card text-muted">No tasks found.</div>
     {% endfor %}
-</ul>
+</div>
+
 {% endblock task_content %}

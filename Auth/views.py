@@ -6,21 +6,27 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Task
+from django.core.mail import send_mail
+from django.conf import settings
+import random
+
+
 from .forms import task_form
 from django.db.models import Q
+# from .signal  import call
 
 
 User=get_user_model()
 def home(request):
     return render (request,'Auth/home.html')
 
-def register(request):
+def     register(request):
     if request.method == "POST":
         user=request.POST.get('username')       
         email=request.POST.get('email')
         password=request.POST.get('password')
         confirmpassword=request.POST.get('confirmpassword')
-        
+        print(email)
         if not all([user, email, password, confirmpassword]):
             messages.error(request, "All fields are required")
             return redirect('register')
@@ -61,7 +67,11 @@ def register(request):
             email=email,
             password=password  # hash the password manually
         )
+        user.is_staff = False
+        user.is_superuser = False  # optional, but good for full access
         user.save()
+        
+       
         return redirect('login')
         
     return render (request,'Auth/register.html')
@@ -109,6 +119,7 @@ def task_forms(request):
             task=form.save(commit=False)
             task.user=request.user
             task.save()
+            print('yes')
             return redirect('today_task')
             
 
@@ -133,7 +144,7 @@ def task_true(request,task_id):
     return redirect ('today_task')
 
 
-def complite_task(request):
+def complete_task(request):
     """ 
         this is treak and changr task mode into complete
     """
@@ -152,7 +163,8 @@ def task_delete(request,task_id):
 
     data=Task.objects.filter(user=request.user)
     complete_task_delete=data.filter(id=task_id).delete()
-    return complite_task(request)
+    print('yes')    
+    return complete_task(request)
     # return render(request,'Auth/complite.html',{'tasks':complete_task_delete})
     # return redirect("Auth/complite.html")
 
