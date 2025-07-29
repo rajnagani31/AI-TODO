@@ -169,3 +169,7 @@ def task_delete(request,task_id):
     # return redirect("Auth/complite.html")
 
 
+
+
+
+
