@@ -11,6 +11,8 @@ from .views import (register,
                     advance_task,
                     task_delete
                     )
+
+from .views import CreateTaskAPI
 urlpatterns = [
     path('',home,name='home'),
     path('register/',register,name='register'),
@@ -22,5 +24,8 @@ urlpatterns = [
     path("complite/",complete_task,name="complite"),
     path("task_update_complete/<int:task_id>/",task_true,name='task_update_complete'),
     path("advance_task/",advance_task,name='advance_task'),
-    path("delete/<int:task_id>/",task_delete,name='delete')
+    path("delete/<int:task_id>/",task_delete,name='delete'),
+    ## Task Create API
+
+    path('create_task/', CreateTaskAPI.as_view(), name='create_task_api'),
 ]

@@ -9,10 +9,12 @@ from .models import Task
 from django.core.mail import send_mail
 from django.conf import settings
 import random
-
-
+from rest_framework.views import APIView
+from .serializers import TaskCreateSerializer
 from .forms import task_form
 from django.db.models import Q
+from requests import Response
+
 # from .signal  import call
 
 
@@ -168,9 +170,20 @@ def task_delete(request,task_id):
     # return render(request,'Auth/complite.html',{'tasks':complete_task_delete})
     # return redirect("Auth/complite.html")
 
-
-
-
-
-
-print("clone pull request")
+class CreateTaskAPI(APIView):
+    def post(self,request):
+        id=request.user.id
+        new_task= request.data.get('Task')
+        task_status= request.data.get('status')
+        description= request.data.get('descri')
+        date_time= request.data.get('date_time')
+        print("ID:",id)
+        print(new_task,task_status,description,date_time)
+        Task.objects.create(
+            user=request.user,
+            Task=new_task,
+            status=task_status,
+            descri=description,
+            date_time=date_time,
+        )
+        return Response({'message': 'Task created successfully'}, status=201)

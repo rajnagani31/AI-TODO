@@ -25,7 +25,7 @@ class Task(models.Model):
         ("complete","complete"),
 
     )
-    complete=models.CharField(blank=False,choices=complete_choice,default="uncomplete")
+    complete=models.CharField(blank=False,choices=complete_choice,default="uncomplete",auto_created=True)
 
 
     
