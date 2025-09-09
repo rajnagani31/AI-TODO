@@ -44,7 +44,7 @@ def     register(request):
         if not password:
             messages.error(request,"This password are required")
             return redirect('register')
-        
+        # wejkfhiweuyf
         if not confirmpassword:
             messages.error(request,"This confirmpassword are required")
             return redirect('register')
