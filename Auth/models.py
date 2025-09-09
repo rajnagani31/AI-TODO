@@ -10,7 +10,7 @@ class User_Register(AbstractUser):
     username = models.EmailField(unique=True , blank=True , null=True)
     firstname = models.CharField(max_length=50 , blank=True , null=True)
     lastname = models.CharField(max_length=50 , blank=True , null=True)
-    is_delete = models.BooleanField(default=True , blank= True , null=True)
+    is_delete = models.BooleanField(default=False , blank= True , null=True)
     REQUIRED_FIELDS = ['username']
     USERNAME_FIELD = 'email'
 

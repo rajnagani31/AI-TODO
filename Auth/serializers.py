@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import User_Register ,Task
 import re , logging
+from django.contrib.auth.hashers import make_password ,check_password
+
 logger = logging.getLogger(__name__)
 
 class TaskCreateSerializer(serializers.ModelSerializer):
@@ -14,12 +16,12 @@ class TaskCreateSerializer(serializers.ModelSerializer):
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
-    password = serializers.CharField(write_only=True, required=True)
+    password = serializers.CharField(required=True)
     class Meta:
         model = User_Register
         fields = ['email', 'password']
 
-    def validate_email(self, data):
+    def validate(self, data):
         if User_Register.objects.filter(email=data['email'] , is_delete=False).exists():
             raise serializers.ValidationError("Email is already in use.")
         
@@ -28,4 +30,17 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             logger.error('Register API Error : Password must be 8 to 25 characters long and must contain at least one uppercase letter, one lowercase letter, one numeric digit, and one special character.')
             raise Exception("Password must be 8 to 25 characters long and must contain at least one uppercase letter, one lowercase letter, one numeric digit, and one special character.")
         data['is_active'] = True
+        data['password'] = make_password(data['password'])
         return data
+    
+class LoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True)
+    class Meta:
+        model = User_Register
+        fields = ['email', 'password']
+
+
+        
+
+

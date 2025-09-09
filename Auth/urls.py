@@ -1,7 +1,5 @@
 from django.urls import path
-from .views import (register,
-                    login_view,
-                    home,
+from .views import (home,
                     add_task,
                     after_loging_home,
                     task_forms,
@@ -11,12 +9,15 @@ from .views import (register,
                     advance_task,
                     task_delete
                     )
-
+from .views import *
 from .views import CreateTaskAPI
 urlpatterns = [
     path('',home,name='home'),
-    path('register/',register,name='register'),
-    path('login/',login_view,name='login'),
+    # User Auth
+    path('register/',UserRegister.as_view(),name='register'),
+    path('login/',LoginAPI.as_view(),name='login'),
+    path("change-password/",ChangePasswordAPI.as_view(),name="change_password"),
+
     path('task/',add_task,name='add_task'),
     path("after_home/",after_loging_home,name="after_login_home"),
     path("task_form/",task_forms,name='task_form'),

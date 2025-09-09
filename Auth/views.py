@@ -5,112 +5,113 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password ,check_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Task
+from .models import Task,User_Register
 from django.core.mail import send_mail
 from django.conf import settings
 import random
 from rest_framework.views import APIView
-
-from .serializers import TaskCreateSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from .serializers import TaskCreateSerializer ,UserRegisterSerializer , LoginSerializer
 from .forms import task_form
 from django.db.models import Q
 from rest_framework.response import Response 
 from rest_framework import status
-
+from util.utils import SerializerValidation
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+import re
 # from .signal  import call
 
 
-User=get_user_model()
 def home(request):
     return render (request,'Auth/home.html')
 
-def register(request):
-    if request.method == "POST":
-        user=request.POST.get('username')       
-        email=request.POST.get('email')
-        password=request.POST.get('password')
-        confirmpassword=request.POST.get('confirmpassword')
-        print(email)
-        if not all([user, email, password, confirmpassword]):
-            messages.error(request, "All fields are required")
-            return redirect('register')
-        
-        if not user:
-            messages.error(request,"This username are required")
-            return redirect('register')
-    
-        if not email:
-            messages.error(request,"This email are required")
-            return redirect('register')
-        
-        if not password:
-            messages.error(request,"This password are required")
-            return redirect('register')
-        # wejkfhiweuyf
-        if not confirmpassword:
-            messages.error(request,"This confirmpassword are required")
-            return redirect('register')
-        if len(password) <=3:
-            messages.error(request,"Plese password Enter more then 3")
-            return redirect('register')
-        
-        if User.objects.filter(username=user).exists():
-            messages.error(request, "Username already exists")
-            return redirect('register')
-        
-        if password != confirmpassword:
-            messages.error(request, "Passwords do not match")
-            return redirect('register')
-        
-        if User.objects.filter(email =email).exists():
-            messages.error(request, "email already exists")
-            return redirect('register')
-
-        user = User.objects.create_user(
-            username=user,
-            email=email,
-            password=password  # hash the password manually
-        )
-        user.is_staff = False
-        user.is_superuser = False  # optional, but good for full access
-        user.save()
-        
-       
-        return redirect('login')
-        
-    return render (request,'Auth/register.html')
-
-class UserRegister(APIView):
-    pass
-
-def login_view(request):
-    if request.method == "POST":
-        # print(type(user_input=request.POST.get('email')))
-        user_input=request.POST.get('email')
-        user_input=request.POST.get('email')
-        print(user_input)
-        password_=request.POST.get('password')
-        print(password_)
-
+class UserRegister(APIView , SerializerValidation):
+    " user register API"
+    def post(self,request):
         try:
-            user_obj=User.objects.get(email=user_input)
-            username=user_obj.username
-            
-            # return redirect("after_login_home")
-        except User.DoesNotExist:
-            username = user_input
-            # messages.error(request,"invalid email or password")
-        
-        user=authenticate(request, username=username ,password=password_)
-        if user is not None:
-            login(request,user)
-            return redirect('after_login_home')
-        else:
-            messages.error(request, "Invalid username/email or password")
-            return redirect('login')
+            serializer = UserRegisterSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                access_token = AccessToken.for_user(serializer.instance)
+                refresh_token = RefreshToken.for_user(serializer.instance)
+                data =({
+                    "token":{
+                        "access": str(access_token),
+                        "refresh": str(refresh_token)
+                    }
+                })
+                return self.return_response(status.HTTP_201_CREATED , "User registered successfully" , data)
+            return self.return_response(status.HTTP_400_BAD_REQUEST , "Data is not valid" , serializer.errors)
+        except Exception as e:
+            print(e)
+            return Response({"ERROR":str(e)},status=status.HTTP_400_BAD_REQUEST)
 
+class LoginAPI(APIView , SerializerValidation):
+    def post(self,request):
+        try:
+            serializer = LoginSerializer(data = request.data)
+            serializer.is_valid(raise_exception=True)
+            email = serializer.data.get('email')
+            password = serializer.data.get('password')
+
+            user = User_Register.objects.filter(email=email).first()
+            if not user:
+                return self.return_response(status.HTTP_404_NOT_FOUND , "First register to login")
+            if not check_password(password , user.password):
+                return self.return_response(status.HTTP_400_BAD_REQUEST , "Password is incorrect")
             
-    return render(request,'Auth/login.html')
+            access_token = AccessToken.for_user(user)
+            refresh_token = RefreshToken.for_user(user)
+            data =({
+                "token":{
+                    "access": str(access_token),
+                    "refresh": str(refresh_token)
+                }
+            })
+
+            return self.return_response(status.HTTP_200_OK , "Login successfully" , data)
+
+        except Exception as e:
+            print(e)
+            return Response({"ERROR":str(e)},status=status.HTTP_400_BAD_REQUEST)    
+
+
+class ChangePasswordAPI(APIView , SerializerValidation):
+    permission_classes= [IsAuthenticated]
+
+    def post(self,request):
+        try:
+
+            user = request.user.id
+            print('user id' , user)
+            # print(user)
+            new_password = request.data.get('new_password')
+            confirm_password = request.data.get('confirm_password')
+
+            if not all([new_password , confirm_password]):
+                return self.return_response(status.HTTP_400_BAD_REQUEST , "All fields are required")
+            
+            password_pattern = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&#^~+=\(\)\-]{8,25}$")
+            if not password_pattern.match(new_password):
+                return self.return_response(status.HTTP_400_BAD_REQUEST , "Password must be 8 to 25 characters long and must contain at least one uppercase letter, one lowercase letter, one numeric digit, and one special character.")
+            if new_password != confirm_password:
+                return self.return_response(status.HTTP_400_BAD_REQUEST , "New password and confirm password must be same")
+
+            data = User_Register.objects.filter(pk = user , is_delete = False).first()
+            print('data',data)
+            if not data:
+                return self.return_response(status.HTTP_404_NOT_FOUND , "User not found")
+            
+            user_password = make_password(new_password)
+            data.password = user_password
+            data.save()
+
+            return self.return_response(status.HTTP_200_OK,"password changed successfully")
+        
+        except Exception as e:
+            print(e)
+            return Response({"ERROR":str(e)},status=status.HTTP_400_BAD_REQUEST)
+        
 
 def after_loging_home(request):
     return render(request,'Auth/after_log_home.html')

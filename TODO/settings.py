@@ -14,7 +14,7 @@ from pathlib import Path
 from django.contrib.messages import constants as messages
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+from datetime import timedelta
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "Auth",
     'rest_framework',
+    'rest_framework_simplejwt',
+    "Auth",
 ]
 
 MIDDLEWARE = [
@@ -94,6 +95,7 @@ DATABASE_ROUTERS = ['Auth.db_router.DatabaseRouter']
 
 
 
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -146,5 +148,16 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'rajnagani331@gmail.com'
 EMAIL_HOST_PASSWORD = 'jvfu rpjv pyod tqdj'  # Replace with your actual email password
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+AUTH_USER_MODEL = 'Auth.User_Register'
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
 
+SIMPLE_JWT =    {
+    "ACCESS_TOKEN_LIFETIME":timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME":timedelta(seconds=60),
+}
