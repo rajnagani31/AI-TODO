@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password ,check_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Task
@@ -10,10 +10,12 @@ from django.core.mail import send_mail
 from django.conf import settings
 import random
 from rest_framework.views import APIView
+
 from .serializers import TaskCreateSerializer
 from .forms import task_form
 from django.db.models import Q
-from requests import Response
+from rest_framework.response import Response 
+from rest_framework import status
 
 # from .signal  import call
 
@@ -22,7 +24,7 @@ User=get_user_model()
 def home(request):
     return render (request,'Auth/home.html')
 
-def     register(request):
+def register(request):
     if request.method == "POST":
         user=request.POST.get('username')       
         email=request.POST.get('email')
@@ -77,6 +79,9 @@ def     register(request):
         return redirect('login')
         
     return render (request,'Auth/register.html')
+
+class UserRegister(APIView):
+    pass
 
 def login_view(request):
     if request.method == "POST":
@@ -172,18 +177,22 @@ def task_delete(request,task_id):
 
 class CreateTaskAPI(APIView):
     def post(self,request):
-        id=request.user.id
-        new_task= request.data.get('Task')
-        task_status= request.data.get('status')
-        description= request.data.get('descri')
-        date_time= request.data.get('date_time')
-        print("ID:",id)
-        print(new_task,task_status,description,date_time)
-        Task.objects.create(
-            user=request.user,
-            Task=new_task,
-            status=task_status,
-            descri=description,
-            date_time=date_time,
-        )
-        return Response({'message': 'Task created successfully'}, status=201)
+        if not request.user.is_authenticated:
+            return Response({"message": "Please log in to create a task"}, status=status.HTTP_401_UNAUTHORIZED)
+        # print(serializer)
+        # user = request.user
+        # user_id =user.id
+        # request.data["user_id"] = user_id
+        # print('user',user_id)
+        serializer = TaskCreateSerializer(data=request.data)
+        # if user:
+        serializer.is_valid()
+        serializer.save(user = request.user)
+
+        return Response({"data":serializer.data,"status":status.HTTP_201_CREATED})
+        # return Response({"Message":"first login to create task"})
+
+
+
+
+        

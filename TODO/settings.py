@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "Auth",
-    'widget_tweaks',
     'rest_framework',
 ]
 
@@ -84,7 +83,7 @@ DATABASES = {
     },
     "cpostgreSql": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME":"Todo", # --> database name
+        "NAME":"todo", # --> database name
         "USER": "postgres",
         "PASSWORD": "1234",
         "HOST": "localhost",
