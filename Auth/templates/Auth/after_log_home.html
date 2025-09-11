@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Task Manager</title>
+    <title>AI User_Task Manager</title>
     <style>
         * {
             margin: 0;
@@ -142,7 +142,7 @@
             font-weight: 600;
         }
 
-        .add-task-btn {
+        .add-User_Task-btn {
             background: var(--accent-color);
             color: white;
             border: none;
@@ -153,12 +153,12 @@
             transition: background 0.2s;
         }
 
-        .add-task-btn:hover {
+        .add-User_Task-btn:hover {
             background: var(--accent-hover);
         }
 
-        /* Task Filters */
-        .task-filters {
+        /* User_Task Filters */
+        .User_Task-filters {
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
@@ -183,13 +183,13 @@
             border-color: var(--accent-color);
         }
 
-        /* Task List */
-        .task-list {
+        /* User_Task List */
+        .User_Task-list {
             display: grid;
             gap: 16px;
         }
 
-        .task-card {
+        .User_Task-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
@@ -199,16 +199,16 @@
             overflow: hidden;
         }
 
-        .task-card:hover {
+        .User_Task-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
 
-        [data-theme="light"] .task-card:hover {
+        [data-theme="light"] .User_Task-card:hover {
             box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
 
-        .task-card::before {
+        .User_Task-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -218,27 +218,27 @@
             background: var(--accent-color);
         }
 
-        .task-header {
+        .User_Task-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 15px;
         }
 
-        .task-title {
+        .User_Task-title {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 5px;
         }
 
-        .task-meta {
+        .User_Task-meta {
             font-size: 12px;
             color: var(--text-secondary);
             display: flex;
             gap: 15px;
         }
 
-        .task-actions {
+        .User_Task-actions {
             display: flex;
             gap: 8px;
         }
@@ -291,7 +291,7 @@
                 width: 100%;
             }
 
-            .task-filters {
+            .User_Task-filters {
                 justify-content: center;
             }
 
@@ -301,7 +301,7 @@
                 align-items: stretch;
             }
 
-            .task-actions {
+            .User_Task-actions {
                 flex-wrap: wrap;
             }
 
@@ -417,18 +417,18 @@
             transform: rotate(90deg);
         }
 
-        /* Animation for task cards */
-        .task-card {
+        /* Animation for User_Task cards */
+        .User_Task-card {
             animation: slideIn 0.3s ease forwards;
             opacity: 0;
             transform: translateY(20px);
         }
 
-        .task-card:nth-child(1) { animation-delay: 0.1s; }
-        .task-card:nth-child(2) { animation-delay: 0.2s; }
-        .task-card:nth-child(3) { animation-delay: 0.3s; }
-        .task-card:nth-child(4) { animation-delay: 0.4s; }
-        .task-card:nth-child(5) { animation-delay: 0.5s; }
+        .User_Task-card:nth-child(1) { animation-delay: 0.1s; }
+        .User_Task-card:nth-child(2) { animation-delay: 0.2s; }
+        .User_Task-card:nth-child(3) { animation-delay: 0.3s; }
+        .User_Task-card:nth-child(4) { animation-delay: 0.4s; }
+        .User_Task-card:nth-child(5) { animation-delay: 0.5s; }
 
         @keyframes slideIn {
             to {
@@ -448,7 +448,7 @@
             <button class="menu-btn" id="menuBtn">
                 <span class="menu-icon">☰</span>
             </button>
-            <div class="logo">AI Task Manager</div>
+            <div class="logo">AI User_Task Manager</div>
         </div>
         <div class="navbar-right">
             <button class="theme-toggle" id="themeToggle">🌙 Dark</button>
@@ -493,15 +493,15 @@
     <main class="main-content" id="mainContent">
         <div class="content-header">
             <h1 class="page-title" id="pageTitle">Tasks</h1>
-             <a href="{% url "task_form" %}"><button class="add-task-btn">+ Add Task</button></a>
+             <a href="{% url "task_form" %}"><button class="add-User_Task-btn">+ Add User_Task</button></a>
         </div>
 
-        <!-- Task Filters -->
-        <div class="task-filters">
-          <a href="{% url 'today_task' %}"><button class="filter-btn ">Today Task</button>
-           <button class="filter-btn ">Advance Task</button></a> 
-            <button class="filter-btn ">Pending Task</button>
-            <a href="{% url 'complite' %}"><button class="filter-btn ">Complete Task</button></a>
+        <!-- User_Task Filters -->
+        <div class="User_Task-filters">
+          <a href="{% url 'today_task' %}"><button class="filter-btn ">Today User_Task</button>
+           <button class="filter-btn ">Advance User_Task</button></a> 
+            <button class="filter-btn ">Pending User_Task</button>
+            <a href="{% url 'complite' %}"><button class="filter-btn ">Complete User_Task</button></a>
         </div>
         {% block task_content %}
         
@@ -613,10 +613,10 @@
             });
         });
 
-        // Task actions
+        // User_Task actions
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('complete-btn')) {
-                const taskCard = e.target.closest('.task-card');
+                const taskCard = e.target.closest('.User_Task-card');
                 taskCard.style.opacity = '0.6';
                 taskCard.style.textDecoration = 'line-through';
                 e.target.textContent = 'Completed';
@@ -626,9 +626,9 @@
             
             
             if (e.target.classList.contains('edit-btn')) {
-                const taskTitle = e.target.closest('.task-card').querySelector('.task-title');
+                const taskTitle = e.target.closest('.User_Task-card').querySelector('.User_Task-title');
                 const currentTitle = taskTitle.textContent;
-                const newTitle = prompt('Edit task title:', currentTitle);
+                const newTitle = prompt('Edit User_Task title:', currentTitle);
                 if (newTitle && newTitle.trim()) {
                     taskTitle.textContent = newTitle.trim();
                 }

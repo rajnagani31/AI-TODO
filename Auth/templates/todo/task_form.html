@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Form Pop-up</title>
+    <title>User_Task Form Pop-up</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -277,20 +277,20 @@
             </button>
             
             <h2 class="form-title">
-                <i class="fas fa-tasks"></i> New Task
+                <i class="fas fa-tasks"></i> New User_Task
             </h2>
             
             <form id="taskForm">
                 <div class="form-group">
-                    <label class="form-label" for="task">Task</label>
-                    <input type="text" class="form-control" id="task" name="task" placeholder="Enter task title...">
+                    <label class="form-label" for="User_Task">User_Task</label>
+                    <input type="text" class="form-control" id="User_Task" name="User_Task" placeholder="Enter User_Task title...">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="status">Status</label>
                     <select class="form-select" id="status" name="status">
                         <option value="today" selected>Today</option>
-                        <option value="advance">Advance Task</option>
+                        <option value="advance">Advance User_Task</option>
                         <option value="tomorrow">Tomorrow</option>
                         <option value="event">Event</option>
                     </select>
@@ -298,7 +298,7 @@
 
                 <div class="form-group">
                     <label class="form-label" for="description">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter task description..."></textarea>
+                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter User_Task description..."></textarea>
                 </div>
 
                 <div class="form-group">
@@ -337,17 +337,17 @@
             e.preventDefault();
             
             const formData = {
-                task: document.getElementById('task').value,
+                User_Task: document.getElementById('User_Task').value,
                 status: document.getElementById('status').value,
                 description: document.getElementById('description').value,
                 date: document.getElementById('date').value,
                 complete: document.getElementById('complete').checked
             };
             
-            console.log('Task Created:', formData);
+            console.log('User_Task Created:', formData);
             
             // Show success animation
-            showSuccess('Task created successfully!');
+            showSuccess('User_Task created successfully!');
             
             // Reset form after a delay
             setTimeout(() => {
@@ -360,24 +360,24 @@
         // Add More button handler
         function addMore() {
             const formData = {
-                task: document.getElementById('task').value,
+                User_Task: document.getElementById('User_Task').value,
                 status: document.getElementById('status').value,
                 description: document.getElementById('description').value,
                 date: document.getElementById('date').value,
                 complete: document.getElementById('complete').checked
             };
             
-            console.log('Task Added:', formData);
+            console.log('User_Task Added:', formData);
             
             // Show success animation
-            showSuccess('Task added! Ready for next task.');
+            showSuccess('User_Task added! Ready for next User_Task.');
             
-            // Clear form for next task
+            // Clear form for next User_Task
             setTimeout(() => {
                 document.getElementById('taskForm').reset();
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('date').value = today;
-                document.getElementById('task').focus();
+                document.getElementById('User_Task').focus();
             }, 1000);
         }
 

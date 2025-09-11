@@ -149,26 +149,15 @@
             
             <form  method='POST' id='loginform'>
                 {% csrf_token %}
-                <!-- Username/Email Field -->
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="fas fa-user icon"></i>
-                    </span>
-                    <div class="form-floating flex-fill">
-                        <input type="email" name='email' class="form-control"  placeholder=" Email" required>
-                        <label for="email"> Email</label>
-                    </div>
+                <!-- Email Field -->
+                <div class="form-floating mb-3 position-relative">
+                    <input type="email" name="email" class="form-control ps-5" id="email" placeholder="Email" required>
+                    <label for="email"><i class="fas fa-user icon position-absolute" style="left: 16px; top: 18px;"></i> Email</label>
                 </div>
-                
                 <!-- Password Field -->
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="fas fa-lock icon"></i>
-                    </span>
-                    <div class="form-floating flex-fill">
-                        <input type="password" name="password" class="form-control"  placeholder="Password" required>
-                        <label for="password">Password</label>
-                    </div>
+                <div class="form-floating mb-3 position-relative">
+                    <input type="password" name="password" class="form-control ps-5" id="password" placeholder="Password" required>
+                    <label for="password"><i class="fas fa-lock icon position-absolute" style="left: 16px; top: 18px;"></i> Password</label>
                 </div>
                 
                 <!-- Remember Me Checkbox -->
@@ -212,8 +201,8 @@
     
     <script>
         // Form submission handling
-        {% comment %} document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault(); {% endcomment %}
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); 
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;

@@ -2,7 +2,7 @@
 
 {% block style %}
   <style>
-  .task-navbar {
+  .User_Task-navbar {
     background-color: #ffffff;
     padding: 10px 20px;
     border: 1px solid #ddd;
@@ -12,14 +12,14 @@
     align-items: center;
   }
 
-  .task-navbar .task-links a {
+  .User_Task-navbar .User_Task-links a {
     margin-left: 20px;
     color: #333;
     font-weight: 500;
     text-decoration: none;
   }
 
-  .task-navbar .task-links a:hover {
+  .User_Task-navbar .User_Task-links a:hover {
     text-decoration: underline;
     
   }
@@ -28,20 +28,20 @@
 {% endblock style %}
 
 {% block content %}
-<!-- Task Navigation Bar below top heading -->
+<!-- User_Task Navigation Bar below top heading -->
 <div class="main-content">
-  <div class="task-navbar mt--10">
-    <!-- Left: Add Task Button -->
+  <div class="User_Task-navbar mt--10">
+    <!-- Left: Add User_Task Button -->
      <a href="{% url "task_form" %}">
-    <button class="btn btn-primary btn-sm">+ Add Task</button>
+    <button class="btn btn-primary btn-sm">+ Add User_Task</button>
     </a>
 
-    <!-- Right: Task Filters -->
-    <div class="task-links">
-      <a href="{% url 'today_task' %}">Today Task</a>
-      <a href="{% url 'advance_task' %}">Advance Task</a>
-      <a href="#">Pending Task</a>
-      <a href="{% url "complite" %}">Complete Task</a>
+    <!-- Right: User_Task Filters -->
+    <div class="User_Task-links">
+      <a href="{% url 'today_task' %}">Today User_Task</a>
+      <a href="{% url 'advance_task' %}">Advance User_Task</a>
+      <a href="#">Pending User_Task</a>
+      <a href="{% url "complite" %}">Complete User_Task</a>
     </div>
   </div>
 

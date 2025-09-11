@@ -4,28 +4,28 @@
 
 {% block task_content %}
   
-<div class="task-list">
-    {% for task in tasks %}
-        <div class="task-card">
-            <div class="task-header">
+<div class="User_Task-list">
+    {% for User_Task in tasks %}
+        <div class="User_Task-card">
+            <div class="User_Task-header">
                 <div>
-                    <div class="task-title">{{ task.Task }} {{ task.id }}</div>
-                    <div class="task-meta">
-                        <span>Status: {{ task.status }}</span>
-                        <span>Date: {{ task.date_time }}</span>
+                    <div class="User_Task-title">{{ User_Task.User_Task }} {{ User_Task.id }}</div>
+                    <div class="User_Task-meta">
+                        <span>Status: {{ User_Task.status }}</span>
+                        <span>Date: {{ User_Task.date_time }}</span>
                     </div>
                 </div>
-                <div class="task-actions">
+                <div class="User_Task-actions">
                     <!-- COMPLETE -->
                     <form method="post" action="" style="display:inline;">
                         {% csrf_token %}
-                        <a href="{% url 'task_update_complete' task.id %}">
+                        <a href="{% url 'task_update_complete' User_Task.id %}">
                         <button type="submit" class="action-btn complete-btn">Complete</button>
                         </a>
                         </form>
 
                     <!-- DELETE -->
-                        <form method="DELETE" action="{% url "delete" task.id %}" style="display:inline;">
+                        <form method="DELETE" action="{% url "delete" User_Task.id %}" style="display:inline;">
                         {% csrf_token %}
                         <a href=""><button type="submit" class="action-btn delete-btn">Delete</button></a>
                         
@@ -37,7 +37,7 @@
             </div>
         </div>
     {% empty %}
-        <div class="task-card text-muted">No tasks found.</div>
+        <div class="User_Task-card text-muted">No tasks found.</div>
     {% endfor %}
 </div>
 

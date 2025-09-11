@@ -1,16 +1,21 @@
 from rest_framework import serializers
-from .models import User_Register ,Task
+from .models import User_Register ,AddTask
 import re , logging
 from django.contrib.auth.hashers import make_password ,check_password
 
 logger = logging.getLogger(__name__)
 
 class TaskCreateSerializer(serializers.ModelSerializer):
-    status = serializers.CharField(required = True)
-    Task = serializers.CharField(required = True)
     class Meta:
-        model = Task
-        fields = ['Task', 'status', 'descri']
+        model = AddTask
+        fields = ['id', 'User_Task', 'status', 'descri', 'date_time', 'priority']
+        # no `user` here, it’s automatically set
+
+    def create(self, validated_data):
+        # Add the logged-in user from context
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+        # titel_task | Description |Due_date | priority | status 
         # fields = '__all__'
         
 

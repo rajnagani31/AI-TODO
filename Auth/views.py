@@ -5,14 +5,14 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password ,check_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Task,User_Register
+from .models import AddTask,User_Register
 from django.core.mail import send_mail
 from django.conf import settings
 import random
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import TaskCreateSerializer ,UserRegisterSerializer , LoginSerializer
-from .forms import task_form
 from django.db.models import Q
 from rest_framework.response import Response 
 from rest_framework import status
@@ -113,107 +113,73 @@ class ChangePasswordAPI(APIView , SerializerValidation):
             return Response({"ERROR":str(e)},status=status.HTTP_400_BAD_REQUEST)
         
 
-def after_loging_home(request):
-    return render(request,'Auth/after_log_home.html')
+class CreateTaskAPI(APIView, SerializerValidation):
+    permission_classes = [IsAuthenticated]
 
-def add_task(request):
-    return render(request,'todo/sidebar.html')
-
-@login_required
-def task_forms(request):
-    if request.method == "POST":
-        form=task_form(request.POST)
-        if form.is_valid():
-            task=form.save(commit=False)
-            task.user=request.user
-            task.save()
-            print('yes')
-            return redirect('today_task')
-            
-
-    else:        
-        form=task_form()
-
-    return render (request,'todo/task_form.html',{'form':form})
-
-def today_task(request):
-    
-    # if Task.objects.filter(status=['today']).exists():
-    data=Task.objects.filter(user=request.user)
-    tasks=data.all().filter(complete='uncomplete')
-
-    return render(request,'todo/today_task.html',{'tasks':tasks})
-
-from django.shortcuts import redirect, get_object_or_404
-def task_true(request,task_id):
-    user=Task.objects.filter(user=request.user,id=task_id)
-
-    task_update=user.update(complete='complete')
-    return redirect ('today_task')
-
-
-def complete_task(request):
-    """ 
-        this is treak and changr task mode into complete
-    """
-    data=Task.objects.filter(user=request.user)
-    complete_task=data.all().filter(complete='complete')
-    return render(request,'todo/complite.html',{'tasks':complete_task})
-
-def advance_task(request):
-    data=Task.objects.filter(user=request.user)
-    advance_task=data.all().filter(Q(status="Advance") & Q(complete="uncomplete"))
-    return render(request,'todo/advance_task.html',{'advance':advance_task})
-
-
-def task_delete(request,task_id):
-    """ Task Delete on complete task page(on ui)"""
-
-    data=Task.objects.filter(user=request.user)
-    complete_task_delete=data.filter(id=task_id).delete()
-    print('yes')    
-    return complete_task(request)
-    # return render(request,'Auth/complite.html',{'tasks':complete_task_delete})
-    # return redirect("Auth/complite.html")
-
-class CreateTaskAPI(APIView):
-    def post(self,request):
-        if not request.user.is_authenticated:
-            return Response({"message": "Please log in to create a task"}, status=status.HTTP_401_UNAUTHORIZED)
-        # print(serializer)
-        # user = request.user
-        # user_id =user.id
-        # request.data["user_id"] = user_id
-        # print('user',user_id)
-        serializer = TaskCreateSerializer(data=request.data)
-        # if user:
-        serializer.is_valid()
-        serializer.save(user = request.user)
-
-        return Response({"data":serializer.data,"status":status.HTTP_201_CREATED})
-        # return Response({"Message":"first login to create task"})
-
-
-
-
-
-
-#
-#rkngbruifb
-#trgrt,hmriuhj
-##jhiwp t894y9vemcnveytier
-#656368784165467989799ytr8y/7y8yu+y7u7y
-#+y95u+9tyu+9ety7u*/ey/79eyt7i98e7y
-
-# dev
-#mklcmoejfoe
-#kmvegon
-#m3kfjo ugv9uybnu
-
+    def post(self, request):
+        try:
+            serializer = TaskCreateSerializer(data=request.data, context={'request': request})
+            if not serializer.is_valid():
+                return self.return_response(
+                    status.HTTP_400_BAD_REQUEST,
+                    "Data is not valid",
+                    serializer.errors
+                )
+            serializer.save()
+            return self.return_response(
+                status.HTTP_201_CREATED,
+                "Task created successfully",
+                serializer.data
+            )
+        except Exception as e:
+            print(e)
+            return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
-# dev jfnef
-# dejkewjebibfibfbu foiwhfiohfihfweihfiwehief
+    
+      
+
+class GetAllTaskAPI(ListAPIView ,SerializerValidation):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TaskCreateSerializer
+
+    def list(self, request , *args, **kwargs):
+        try:
+            user = request.user.id
+            tasks = AddTask.objects.filter(user=user, is_complete=False).order_by('id')
+            serializer = self.get_serializer(tasks, many=True)
+            return self.return_response(
+                status.HTTP_200_OK,
+                "Tasks retrieved successfully",
+                serializer.data
+            )
+        except Exception as e:
+            print(e)
+            return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
 
 
-# iuhiuweh
-# iofoiwhf# 
+class TaskEditAPI(APIView, SerializerValidation):
+
+    def put(self, request, id):
+        try:
+            task = AddTask.objects.filter(id=id, is_delete=False).first()
+            if not task:
+                return self.return_response(status.HTTP_404_NOT_FOUND, "Task not found")
+            
+            serializer = TaskCreateSerializer(task, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return self.return_response(
+                    status.HTTP_200_OK,
+                    "Task updated successfully",
+                    serializer.data
+                )
+            return self.return_response(
+                status.HTTP_400_BAD_REQUEST,
+                "Data is not valid",
+                serializer.errors
+            )
+        except Exception as e:
+            print(e)
+            return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            

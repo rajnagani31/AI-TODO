@@ -19,24 +19,25 @@ class User_Register(AbstractUser):
 
     
 
+class custom(models.Model):
+    name=models.CharField(max_length=50)
+    email=models.EmailField()
+    password=models.CharField(max_length=50)
 
-class Task(models.Model):
-    # add task form
-    choices=(
-        ('Today',"Today"),
-        ('Tomorrow',"Tomorrow"),
-        ("Advance","Advance"),
-        
-    )
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE ,blank=True ,null=True)
-    Task=models.CharField(max_length=50,default=None)
-    status=models.CharField(choices=choices,max_length=20,default='Today')
+    class Meta:
+        db_table = 'custom_user'        
+
+class AddTask(models.Model):
+    # add User_Task form
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(User_Register,on_delete=models.CASCADE ,blank=True ,null=True)
+    User_Task=models.CharField(max_length=50,default=None)
+    status=models.CharField(max_length=20,blank=True,null=True,default='Today')
     descri=models.CharField(blank=True,max_length=100 , null=True)
-    date_time=models.DateField(auto_created=True) 
-    complete_choice=(
-        ("uncomplete","uncomplete"),
-        ("complete","complete"),
-
-    )
-    complete=models.CharField(choices=complete_choice,default="uncomplete",auto_created=True )
-
+    date_time=models.DateField(auto_now_add=True , blank=True , null=True) 
+    is_complete=models.BooleanField(default=False ,blank=True , null=True)
+    priority = models.CharField(max_length=20, blank=True , null=True)
+    is_delete = models.BooleanField(default=False , blank=True , null=True)
+    is_active = models.BooleanField(default=True , blank=True , null=True)
+    class Meta:
+        db_table = 'Add Task'           
