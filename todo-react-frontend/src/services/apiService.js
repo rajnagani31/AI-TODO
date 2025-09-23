@@ -48,12 +48,17 @@ class ApiService {
       }
 
       if (!response.ok) {
-        throw new Error(data.message || data.ERROR || `HTTP error! status: ${response.status}`);
+        // Return structured error including status so callers can handle 429 etc.
+        const errMsg = (data && (data.message || data.ERROR)) || `HTTP error! status: ${response.status}`;
+        return { success: false, error: errMsg, status: response.status, data };
       }
 
-      return { success: true, data, status: response.status };
+      // Normalize: if backend wraps payload as { ..., data: <payload> }, unwrap one level
+      const payload = (data && Object.prototype.hasOwnProperty.call(data, 'data')) ? data.data : data;
+
+      return { success: true, data: payload, raw: data, status: response.status };
     } catch (error) {
-      console.error('API Request failed:', error);
+      console.error('API Request failed (network):', error);
       return { success: false, error: error.message, status: 500 };
     }
   }
@@ -74,9 +79,9 @@ class ApiService {
       body: JSON.stringify(credentials),
     });
 
-    if (result.success && result.data.data?.token) {
-      localStorage.setItem('access_token', result.data.data.token.access);
-      localStorage.setItem('refresh_token', result.data.data.token.refresh);
+    if (result.success && result.data?.token) {
+      localStorage.setItem('access_token', result.data.token.access);
+      localStorage.setItem('refresh_token', result.data.token.refresh);
     }
 
     return result;
@@ -120,17 +125,33 @@ class ApiService {
   }
 
   async deleteTask(taskId) {
-    return this.makeRequest(`/delete-task/${taskId}/`, {
+    // backend route is /delete/<id>/
+    return this.makeRequest(`/delete/${taskId}/`, {
       method: 'DELETE',
     });
   }
 
-  async getTodayTasks() {
-    return this.makeRequest('/tasks/today/'); // optional if you add in Django
+  async completeTask(taskId) {
+    // backend route is /complete/<id>/ (PUT)
+    return this.makeRequest(`/complete/${taskId}/`, {
+      method: 'PUT',
+    });
   }
 
-  async getCompleteTasks() {
-    return this.makeRequest('/tasks/complete/'); // optional if you add in Django
+  async getTodayTasks() {
+    return this.makeRequest('/today-task/');
+  }
+
+  async getAdvanceTasks() {
+    return this.makeRequest('/Advance-task/');
+  }
+
+  async getPendingTasks() {
+    return this.makeRequest('/pending-task/');
+  }
+
+  async getCompletedTasks() {
+    return this.makeRequest('/completed-task/');
   }
 }
 

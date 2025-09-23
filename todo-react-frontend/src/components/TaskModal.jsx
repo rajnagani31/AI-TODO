@@ -57,8 +57,8 @@ const TaskModal = ({ User_Task, onSave, onClose }) => {
         descri: formData.description,
         priority: formData.priority,
         status: formData.status,
-        is_complete: formData.completed
-        // ⚠️ date_time is auto_now_add in Django, no need to send
+        is_complete: formData.completed,
+        date_time: formData.due_date || null
       };
 
       if (User_Task) {
@@ -70,7 +70,7 @@ const TaskModal = ({ User_Task, onSave, onClose }) => {
       }
 
       if (result.success) {
-        onSave(result.data.data || { ...taskData, id: Date.now() });
+        onSave(result.data || { ...taskData, id: Date.now() });
       } else {
         setError(result.error || 'Failed to save task');
       }

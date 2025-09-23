@@ -34,7 +34,7 @@ class AddTask(models.Model):
     User_Task=models.CharField(max_length=50,default=None)
     status=models.CharField(max_length=20,blank=True,null=True,default='Today')
     descri=models.CharField(blank=True,max_length=100 , null=True)
-    date_time=models.DateField(auto_now_add=True , blank=True , null=True) 
+    date_time=models.DateField(auto_now_add=True, blank=True , null=True) 
     is_complete=models.BooleanField(default=False ,blank=True , null=True)
     priority = models.CharField(max_length=20, blank=True , null=True)
     is_delete = models.BooleanField(default=False , blank=True , null=True)
