@@ -94,7 +94,9 @@ class ApiService {
     });
   }
 
-  logout() {
+  async logout() {
+    // Call destroy-token API
+    await this.makeRequest('/destroy-token/', { method: 'POST' });
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
   }
@@ -156,3 +158,4 @@ class ApiService {
 }
 
 export default new ApiService();
+

@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password ,check_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import AddTask,User_Register
+from .models import AddTask,User_Register,ValidateToken
 from django.core.mail import send_mail
 from django.conf import settings
 import random
@@ -26,8 +26,6 @@ from django.db.models import Q
 query = Q()
 query = query & Q(is_delete = False)
 
-def home(request):
-    return render (request,'Auth/home.html')
 
 class UserRegister(APIView , SerializerValidation):
     " user register API"
@@ -74,7 +72,11 @@ class LoginAPI(APIView , SerializerValidation):
                     "refresh": str(refresh_token)
                 }
             })
-
+            ValidateToken.objects.update_or_create(
+                user = user,
+                defaults = {"token": str(access_token) , "is_delete": False},
+                type = 'access token',
+                )
             return self.return_response(status.HTTP_200_OK , "Login successfully" , data)
 
         except Exception as e:
@@ -163,7 +165,6 @@ class GetAllTaskAPI(ListAPIView ,SerializerValidation):
             print(e)
             return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
-
 
 class TaskEditAPI(APIView, SerializerValidation):
 
@@ -319,3 +320,18 @@ class DeleteTaskAPI(APIView, SerializerValidation):
         except Exception as e:
             print(e)
             return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)        
+
+
+class DestroyTokenAPI(APIView, SerializerValidation):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            user = request.user.id
+            ValidateToken.objects.filter(user=user, type='access token' ,is_delete=False).update(is_delete=True)
+            return self.return_response(
+                status.HTTP_200_OK,
+                "Token destroyed successfully"
+            )
+        except Exception as e:
+            return Response({"ERROR": str(e)}, status=status.HTTP_400_BAD_REQUEST)

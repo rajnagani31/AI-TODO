@@ -25,4 +25,6 @@ urlpatterns = [
     # complete and delete
     path("complete/<int:id>/",CompleteTaskAPI.as_view(),name="complete_task"),
     path("delete/<int:id>/",DeleteTaskAPI.as_view(),name="delete_task"),
+
+    path("destroy-token/",DestroyTokenAPI.as_view(),name="destroy_token"),
 ]

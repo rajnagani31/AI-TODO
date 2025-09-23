@@ -1,1 +1,77 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.pot
+*.mo
+.env
+.env*
+.venv/
+venv/
+ENV/
+env.bak/
+*.bak
+*.swp
+*.swo
+*.tmp
+.DS_Store
+
+# Django
+*.sqlite3
+*.db
+/static/
+/media/
+local_settings.py
+settings_local.py
+
+# Node
+node_modules/
+*.tgz
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# React
+/build/
+/.cache/
+
+# VSCode
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Test & Coverage
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# Misc
+*.pem
+*.key
+*.crt
+*.lock
+
+# Production
+.env.production
+.env.staging
+.env.local
+
+# Others
+*.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project
 .venv

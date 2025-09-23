@@ -9,7 +9,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [filteredTasks, setFilteredTasks] = useState([]);
-  const [currentFilter, setCurrentFilter] = useState('all');
+  const [currentFilter, setCurrentFilter] = useState('today');
   const [loading, setLoading] = useState(true);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -23,8 +23,8 @@ const Dashboard = () => {
       navigate('/login');
       return;
     }
-    
-    loadTasks();
+    // Load today tasks by default
+    handleTodayTasksClick();
   }, [navigate]);
 
   useEffect(() => {
@@ -326,8 +326,8 @@ const Dashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    apiService.logout();
+  const handleLogout = async () => {
+    await apiService.logout();
     navigate('/login');
   };
 

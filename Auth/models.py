@@ -41,3 +41,12 @@ class AddTask(models.Model):
     is_active = models.BooleanField(default=True , blank=True , null=True)
     class Meta:
         db_table = 'Add Task'           
+
+class ValidateToken(models.Model):
+    user = models.ForeignKey(User_Register,on_delete=models.CASCADE ,blank=True ,null=True)
+    token = models.CharField(max_length=500 , blank=True , null=True)
+    type = models.CharField(max_length=50 , blank=True , null=True ,default='access token')
+    is_delete = models.BooleanField(default=False , blank=True , null=True)
+
+    class Meta:
+        db_table = 'Validate Token'
