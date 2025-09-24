@@ -195,7 +195,7 @@ from datetime import timedelta
 from dotenv import load_dotenv
 import os
 
-load_dotenv( BASE_DIR / ".env")
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -206,7 +206,8 @@ SECRET_KEY = "django-insecure-lj%5&w31n23d*3)ev29gj&rhth^dc^5*$0^j#2&o8677dpvj73
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",")]
 
 
 # Application definition
@@ -368,4 +369,3 @@ SIMPLE_JWT =    {
     "ACCESS_TOKEN_LIFETIME":timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME":timedelta(seconds=60),
 }
-
