@@ -49,7 +49,7 @@ class UserRegister(APIView , SerializerValidation):
             return Response({"ERROR":str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class LoginAPI(APIView , SerializerValidation):
-    def post(self,request) -> int:
+    def post(self,request):
         try:
             serializer = LoginSerializer(data = request.data)
             serializer.is_valid(raise_exception=True)
@@ -80,7 +80,6 @@ class LoginAPI(APIView , SerializerValidation):
             return self.return_response(status.HTTP_200_OK , "Login successfully" , data)
 
         except Exception as e:
-            print(e)
             return Response({"ERROR":str(e)},status=status.HTTP_400_BAD_REQUEST)    
 
 
@@ -149,7 +148,7 @@ class CreateTaskAPI(APIView, SerializerValidation):
       
 
 class GetAllTaskAPI(ListAPIView ,SerializerValidation):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = TaskCreateSerializer
     def list(self, request , *args, **kwargs):
         try:
